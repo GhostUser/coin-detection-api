@@ -1,5 +1,5 @@
 django
-opencv-python==4.5.2
+opencv-python==4.5.2.54
 gunicorn
 numpy
 requests
