@@ -51,14 +51,15 @@ def coin_detect(request):
     data.update({"Number of Coins": len(circles[0, :]), "faces": coin_det, "success": True})
     return JsonResponse(data)
 
-def _grab_image(path=None, url=None):
+def _grab_image(path=None, stream=None, url=None):
     if path is not None:
         image = cv2.imread(path)
     else:	
         if url is not None:
             resp = urllib.urlopen(url)
             data = resp.read()
-        #converting file to numpy array and decoding into a image using open-CV
+        elif stream is not None:
+            data = stream.read()
         image = np.asarray(bytearray(data), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
