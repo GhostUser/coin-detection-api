@@ -4,3 +4,4 @@ gunicorn
 numpy
 requests
 jinja2
+django-heroku
