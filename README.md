@@ -17,17 +17,17 @@
  ```python manage.py runserver```
 
 ## Test
-The API can be tested using curl or the included ```test_api.py``` file.
+The API can be tested using curl or the included ```api_test.py``` file.
 
-Using test_api.py also displays the result image. 
+Using api_test.py also displays the result image. 
 ![Result image](/doc_image/Screenshot703.png)
 
 Using curl we get the response in JSON.
 ![JSON Response](/doc_image/InkScreenshot705.jpg)
 
 1. To test the API using included test_api python file, 
-    * run the ```test_api.py``` with path to the image as second argument .i.e  
-    ```python test_api.py [path_to_image]```
+    * run the ```api_test.py``` with path to the image as second argument .i.e  
+    ```python api_test.py [path_to_image]```
 
 2. To test the file using curl, use the following command
     * ```curl -X POST -F image=@[path_to_image] "[api_endpoint**]"```
