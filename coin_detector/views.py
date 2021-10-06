@@ -21,34 +21,36 @@ def coin_detect(request):
                 return JsonResponse(data)            
             img = _grab_image(url=url)
     #Coverting image to grayscale and applying threshold.
-    img_gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    print(img.shape)
-    ca=100
-    cb=200
-    ret, thres_tz= cv2.threshold(img_gray, 120, 255, cv2.THRESH_TOZERO)
-    blur_tz=cv2.medianBlur(thres_tz, 5, 0)
-    canny_tz=cv2.Canny(blur_tz, ca, cb)
-    canny_tz_1=cv2.threshold(canny_tz, 100, 255, cv2.THRESH_BINARY)[1]
+    gray=cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    smooth_gray=cv2.medianBlur(gray, 3)
 
-    #As a safe measure, copying the threshold and image to test_img
-    test_img=canny_tz_1.copy()
-    test_img2=img.copy()
+    cann=cv2.Canny(smooth_gray, 70, 140)
 
+    thres=cv2.threshold(cann, 130, 255, cv2.THRESH_TRUNC)[1]
+
+
+    circles=cv2.HoughCircles(thres,  cv2.HOUGH_GRADIENT, dp=2 ,minDist=425, minRadius=150, maxRadius=400)
     #Using Hough Circles to detect circles 
-    circles=cv2.HoughCircles(test_img,  cv2.HOUGH_GRADIENT, dp=2 ,minDist=250, minRadius=150, maxRadius=300)
+    circles=np.uint16(np.around(circles))
     circles=np.uint16(np.around(circles))
 
     print(f"No. of Coins: {len(circles[0, :])}")
-    no_img=1
-    coin_det={}
-    for i in circles[0, :]:
-        test_img2=cv2.circle(test_img2, (i[0], i[1]), i[2], (255,0,0),9)
-        test_img2=cv2.circle(test_img2, (i[0], i[1]), 10, (0,0,255), -1)
-        print(f"Center: ({i[0]}, {i[1]}), Radius: {i[2]}")
-        coin_det[f"Coin {no_img}"]= f"Center: ({i[0]}, {i[1]}), Radius: {i[2]}"
-        no_img+=1
-    #Dumping coin dat into json
-    data.update({"Number of Coins": len(circles[0, :]), "faces": coin_det, "success": True})
+    coin_det_list=[(int(i[0]), int(i[1]), int(i[2])) for i in circles[0, :]]
+    #no_img=1
+    #coin_det={}
+    #coin_det_list=[]
+  
+    #for i in circles[0, :]:
+        #for drawing circles
+        #test_img2=cv2.circle(test_img2, (i[0], i[1]), i[2], (0,0, 255),9)
+        #test_img2=cv2.circle(test_img2, (i[0], i[1]), 10, (0,255,0), -1)
+        #print(f"Center: ({i[0]}, {i[1]}), Radius: {i[2]}")
+        #coin_det_list+=[(i[0], i[1], i[2])]
+        #coin_det[f"Coin {no_img}"]= f"Center: ({i[0]}, {i[1]}), Radius: {i[2]}"
+        #no_img+=1
+
+    #Dumping coin data into json
+    data.update({"Number of Coins": len(circles[0, :]), "coins(x,y,r)": coin_det_list, "success": True})
     return JsonResponse(data)
 
 def _grab_image(path=None, stream=None, url=None):
