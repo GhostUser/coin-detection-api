@@ -15,9 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from coin_detector.views import coin_detect
+from coin_detector.views import coin_detect, HomePageView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('coin_detect/', coin_detect),#new
+    path('', HomePageView.as_view(), name='home'),
 ]

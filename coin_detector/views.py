@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.generic import TemplateView
 #importing libs
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -65,3 +67,6 @@ def _grab_image(path=None, stream=None, url=None):
         image = np.asarray(bytearray(data), dtype="uint8")
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
     return image
+
+class HomePageView(TemplateView):
+    template_name = 'home.html'
